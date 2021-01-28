@@ -1,12 +1,11 @@
 import React from "react";
-import Navbar from "../Components/Navbar";
+import PageLayout from "./Navbar";
 import { gql, useQuery } from "@apollo/client";
-import { Card, Col, Image, Row } from "antd";
-import Layout from "antd/lib/layout/layout";
+import { Card, Col, Row } from "antd";
 
 const LAST_HOTELS = gql`
   {
-    hotels {
+    hotels(last: 10) {
       id
       name
       description
@@ -29,34 +28,29 @@ function Home() {
   console.log(data);
 
   return (
-    <div>
-      <Navbar />
-      <Row gutter={[8, 8]}>
+    <PageLayout>
+      <Row gutter={[10, 10]}>
         {data.hotels.map((hotel) => {
           return (
-            <div key={hotel.id}>
-              <Col span={8}>
+            <Col xs={12} sm={8} md={8} lg={6} xl={6}>
+              <div key={hotel.id}>
                 <Card
                   hoverable
-                  style={{ width: 240 }}
                   cover={<img alt="example image" src={hotel.photos.url}></img>}
                 >
-                  <Card.Meta
-                    title={hotel.name}
-                    description={
-                      <div>
-                        {hotel.description}
-                        <br></br>Phone number:{hotel.phone}
-                      </div>
-                    }
-                  ></Card.Meta>
+                  <p>{hotel.name}</p>
+                  <p>{hotel.description}</p>
+                  <p>
+                    {hotel.website}
+                    {hotel.phone}
+                  </p>
                 </Card>
-              </Col>
-            </div>
+              </div>
+            </Col>
           );
         })}
       </Row>
-    </div>
+    </PageLayout>
   );
 }
 
