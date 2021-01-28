@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Form, Input, Button, Card, Select } from "antd";
-import { gql, useMutation } from "@apollo/client";
 import { NavLink } from "react-router-dom";
 
 const layout = {
@@ -10,73 +9,43 @@ const layout = {
 const tailLayout = {
   wrapperCol: { offset: 8, span: 16 },
 };
-const CREATE_HOTEL = gql`
-  mutation CREATE_HOTEL(
-    $name: String!
-    $description: String
-    $rooms: Int
-    $phone: String
-    $website: String
-  ) {
-    createHotel(
-      data: {
-        name: $name
-        description: $description
-        rooms: $rooms
-        phone: $phone
-        website: $website
-      }
-    ) {
-      name
-      description
-      id
-      rooms
-      website
-      phone
-    }
-  }
-`;
 
-function CreateForm() {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [rooms, setRooms] = useState(0);
-  const [phone, setPhone] = useState("");
-  const [website, setWebsite] = useState("");
-  const [amenities, setAmenities] = useState([]);
-  const [createHotel] = useMutation(CREATE_HOTEL);
-
+function CreateForm({ data, mutation, id }) {
   // console.log(createHotel);
 
-  const onFinish = () => {
-    createHotel({
+  const onFinish = (e) => {
+    const { name, description, rooms, website, amenities, phone } = e;
+    mutation({
       variables: {
-        name: name,
-        description: description,
+        id: id || "",
+        name,
+        description,
         rooms: parseInt(rooms),
-        website: website,
-        amenities: amenities,
+        website,
+        amenities,
+        phone,
       },
     })
-      .then((res) => console.log(res))
+      .then((res) => console.log("Mutation successfully done"))
       .catch((error) => console.log(error));
   };
 
   return (
     <Card title="Create Hotel">
       <Form
+        initialValues={data || {}}
         {...layout}
         name="basic"
         labelAlign="left"
         labelCol={{ span: 6, offset: 2 }}
-        onFinish={onFinish}
+        onFinish={(e) => onFinish(e)}
       >
         <Form.Item
           label="Name"
           name="name"
           rules={[{ required: true, message: "Please input your Hotel name" }]}
         >
-          <Input value={name} onChange={(e) => setName(e.target.value)} />
+          <Input />
         </Form.Item>
 
         <Form.Item
@@ -89,17 +58,11 @@ function CreateForm() {
             },
           ]}
         >
-          <Input.TextArea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
+          <Input.TextArea />
         </Form.Item>
 
         <Form.Item label="Rooms" name="rooms">
-          <Input
-            value={rooms}
-            onChange={(e) => setRooms(e.target.value)}
-          ></Input>
+          <Input></Input>
         </Form.Item>
 
         <Form.Item
@@ -112,17 +75,11 @@ function CreateForm() {
             },
           ]}
         >
-          <Input
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-          ></Input>
+          <Input></Input>
         </Form.Item>
 
         <Form.Item label="Website" name="website">
-          <Input
-            value={website}
-            onChange={(e) => setWebsite(e.target.value)}
-          ></Input>
+          <Input></Input>
         </Form.Item>
 
         {/* <Form.Item label="Amenities" name="amenities">

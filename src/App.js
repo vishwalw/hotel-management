@@ -26,8 +26,8 @@ function App() {
           <Route path={HOME} component={Home} exact />
           <Route path={HOTEL} component={Hotel} exact />
           <Route path={CREATEHOTEL} component={Createhotel} exact />
-          <Route path={HOTELDETAIL} component={Hoteldetails} />
           <Route path={HOTELEDIT} component={Hoteledit} exact />
+          <Route path={HOTELDETAIL} component={Hoteldetails} />
           <Route path={DESTINATION} component={Destination} exact />
         </Switch>
       </BrowserRouter>

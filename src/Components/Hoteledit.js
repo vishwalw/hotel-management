@@ -1,6 +1,9 @@
-import { gql } from "@apollo/client";
-import React from "react";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { Col, Row } from "antd";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router";
 import PageLayout from "./Navbar";
+import Form from "./Form";
 
 const EDITHOTEL = gql`
   mutation UPDATEHOTEL(
@@ -9,6 +12,7 @@ const EDITHOTEL = gql`
     $rooms: Int
     $phone: String
     $website: String
+    $id: ID!
   ) {
     updateHotel(
       data: {
@@ -18,19 +22,51 @@ const EDITHOTEL = gql`
         phone: $phone
         website: $website
       }
-      where: { id: "ckkgi0cfx2yfa0872klci6ku5" }
+      where: { id: $id }
     ) {
       name
       id
       phone
       rooms
       website
+      description
+    }
+  }
+`;
+const GET_HOTEL_DETAILS = gql`
+  query($id: ID!) {
+    hotels(where: { id: $id }) {
+      name
+      id
+      description
+      rooms
+      website
+      amenities
+      status
+      phone
     }
   }
 `;
 
 function Hoteledit() {
-  return <PageLayout>Edit page</PageLayout>;
+  const { hotelId } = useParams();
+  const [updateHotel] = useMutation(EDITHOTEL);
+
+  const { loading, error, data } = useQuery(GET_HOTEL_DETAILS, {
+    variables: { id: hotelId },
+  });
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>An error occured!!!</p>;
+
+  return (
+    <PageLayout>
+      <Row justify="center">
+        <Col span={12}>
+          <Form data={data.hotels[0]} mutation={updateHotel} id={hotelId} />
+        </Col>
+      </Row>
+    </PageLayout>
+  );
 }
 
 export default Hoteledit;
