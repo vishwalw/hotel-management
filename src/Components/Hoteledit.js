@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import PageLayout from "./Navbar";
 import Form from "./Form";
+import Loader from "./Loader";
+import Page404 from "./error";
 
 const EDITHOTEL = gql`
   mutation UPDATEHOTEL(
@@ -55,8 +57,8 @@ function Hoteledit() {
   const { loading, error, data } = useQuery(GET_HOTEL_DETAILS, {
     variables: { id: hotelId },
   });
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>An error occured!!!</p>;
+  if (loading) return <Loader />;
+  if (error) return <Page404 />;
 
   return (
     <PageLayout>

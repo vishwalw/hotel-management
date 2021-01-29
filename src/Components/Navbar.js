@@ -21,7 +21,9 @@ function PageLayout({ children }) {
           </Menu>
         </Header>
         <Layout>
-          <Content>{children}</Content>
+          <Content style={{ padding: 16, minHeight: "90vh" }}>
+            {children}
+          </Content>
         </Layout>
       </Layout>
     </div>

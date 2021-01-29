@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Card, Select } from "antd";
+import { Form, Input, Button, Card, Select, Upload } from "antd";
 import { NavLink } from "react-router-dom";
+import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 
 const layout = {
   labelCol: { span: 8 },
@@ -11,7 +12,14 @@ const tailLayout = {
 };
 
 function CreateForm({ data, mutation, id }) {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
+  const [amenitiyName, setAmenityName] = useState("");
   // console.log(createHotel);
+  const addItem = () => {
+    setItems([...items, amenitiyName]);
+  };
 
   const onFinish = (e) => {
     const { name, description, rooms, website, amenities, phone } = e;
@@ -28,7 +36,15 @@ function CreateForm({ data, mutation, id }) {
     })
       .then((res) => console.log("Mutation successfully done"))
       .catch((error) => console.log(error));
+    console.log(e);
   };
+
+  const uploadButton = (
+    <div>
+      {loading ? <LoadingOutlined /> : <PlusOutlined />}
+      <div style={{ marginTop: 8 }}>Upload</div>
+    </div>
+  );
 
   return (
     <Card title="Create Hotel">
@@ -75,25 +91,67 @@ function CreateForm({ data, mutation, id }) {
             },
           ]}
         >
-          <Input></Input>
+          <Input addonBefore="+91"></Input>
         </Form.Item>
 
         <Form.Item label="Website" name="website">
           <Input></Input>
         </Form.Item>
 
-        {/* <Form.Item label="Amenities" name="amenities">
-          <Select
-            mode="multiple"
-            placeholder="Please select"
-            defaultValue={[]}
-            onChange={(e) => setAmenities(e.target.value)}
-          >
+        <Form.Item label="Amenities" name="amenities">
+          {/* <Select mode="multiple" placeholder="Please select" defaultValue={[]}>
             <Select.Option>swimming pool</Select.Option>
             <Select.Option>Gym</Select.Option>
             <Select.Option>Tennis court</Select.Option>
+          </Select> */}
+          <Select
+            mode="multiple"
+            placeholder="Add Amenities"
+            dropdownRender={(menu) => (
+              <div>
+                {menu}
+                <div
+                  style={{ display: "flex", flexWrap: "nowrap", padding: 8 }}
+                >
+                  <Input
+                    style={{ flex: "auto" }}
+                    value={amenitiyName}
+                    onChange={(e) => setAmenityName(e.target.value)}
+                  />
+                  <a
+                    style={{
+                      flex: "none",
+                      padding: "8px",
+                      display: "block",
+                      cursor: "pointer",
+                    }}
+                    onClick={addItem}
+                  >
+                    Add item
+                  </a>
+                </div>
+              </div>
+            )}
+          >
+            {items.map((item) => (
+              <Select.Option key={item}>{item}</Select.Option>
+            ))}
           </Select>
-        </Form.Item> */}
+        </Form.Item>
+
+        <Form.Item label="Photos" name="photos">
+          <Upload
+            accept=".jpg,.png,.jpeg"
+            name="hotelImage"
+            listType="picture-card"
+          >
+            {imageUrl ? (
+              <img src={imageUrl} alt="avatar" style={{ width: "100%" }} />
+            ) : (
+              uploadButton
+            )}
+          </Upload>
+        </Form.Item>
 
         <Form.Item {...tailLayout}>
           {/* <NavLink to="/hotel"> */}
